@@ -1,32 +1,69 @@
-@foreach($products->get() as $prod)
-<div class='p-4 rounded bg-blue-200 w-full flex items-start'>
-    <img src={{$prod->imgUrl}} style='width: 100px; height: auto;' class='mr-4'>
-    <div>
-        <h3 class='text-2xl'>{{$prod->name}}</h3>
-        <hr />
-        <div class='italic text-gray-500'>
-            {{$prod->description}}
+<div id="product-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    @foreach($products->get() as $prod)
+    <div class="p-4 bg-white rounded-lg shadow-md flex flex-col" id="product-{{ $prod->id }}">
+        <div class="flex items-center mb-4">
+            <img src="{{ $prod->imgUrl }}" alt="Image Not Available" class="w-24 h-24 object-cover rounded-md mr-4">
+            <div class="flex-1">
+                <h3 class="text-xl font-semibold">{{ $prod->name }}</h3>
+                <p class="text-gray-600">{{ $prod->description }}</p>
+            </div>
         </div>
-        <div class='text-4xl text-right text-green-600'>{{$prod->price}}</div>
+        <div class="flex justify-between items-center mt-auto">
+            <div class="text-xl font-semibold text-green-900">{{ $prod->price }}</div>
+            <div class="flex space-x-2">
+                <button hx-get="/api/products/{{ $prod->id }}/edit" 
+                        hx-target="#edit-product-modal" 
+                        hx-swap="innerHTML"
+                        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
+                        onclick="showEditModal()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                    </svg>
+                </button>
+                <button hx-delete="/api/products/{{ $prod->id }}" 
+                        hx-target="#product-{{ $prod->id }}" 
+                        hx-swap="delete" 
+                        hx-confirm="Are you sure you want to delete this product?"
+                        class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
     </div>
-</div>
-@endforeach
-
-<div id="imgUrl_Error" hx-swap-oob='true'>
-
-</div>
-<div id="name_Error" hx-swap-oob='true'>
-
-</div>
-<div id="description_Error" hx-swap-oob='true'>
-
-</div>
-<div id="price_Error" hx-swap-oob='true'>
-
+    @endforeach
 </div>
 
-<div id='addMessage' hx-swap-oob='true'>
-    <div class='bg-green-200 text-center text-green-800 p-3 rounded'>
-        The Product has been added successfully.
-    </div>
-</div> 
+
+
+
+
+    <div id="imgUrl_Error" 
+    hx-swap-oob="ture"></div>
+
+    <div id="name_Error" 
+    hx-swap-oob="ture"></div>
+
+    <div id="description_Error" 
+    hx-swap-oob="ture"></div>
+
+    <div id="price_Error" 
+    hx-swap-oob="ture"></div>
+
+    <div id='addMessage' 
+    hx-swap-oob='true'>
+    
+        <div class='bg-green-200 text-center text-green-800 p-3 rounded'>
+            Product successfully saved.
+        </div>
+    </div> 
+
+    <script>
+        function showEditModal() {
+            document.getElementById('edit-product-modal').classList.remove('hidden');
+        }
+
+    </script>
+

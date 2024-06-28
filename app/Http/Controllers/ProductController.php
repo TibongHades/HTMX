@@ -16,24 +16,8 @@ class ProductController extends Controller
                      ->orWhere('description', 'like', "%$request->filter%");
         }
 
-        $html = "";
+        return view('pages.product-message', ['products' => $products]);
 
-        foreach ($products->get() as $prod) {
-            $html .= "
-            <div class='p-4 rounded bg-blue-200 w-full flex flex-col items-start'>
-            <div class='flex items-center w-full'>
-                <img src='$prod->imgUrl' style='width: 100px; height: auto;' class='mr-4'>
-                <div class='flex-1'>
-                    <h3 class='text-2xl'>$prod->name</h3>
-                    <div class='italic text-gray-500'>$prod->description</div>
-                </div>
-            </div>
-            <div class='text-4xl text-yellow-600 self-end mt-4'>$prod->price</div>
-        </div>
-            ";
-        }
-
-        return $html;
     }
 
     public function store(Request $request) {
@@ -55,5 +39,38 @@ class ProductController extends Controller
         
         return view('pages.product-message', ['products'=>$products]);
     }
+
+    public function edit($id)
+    {
+        $product = Product::find($id);
+    
+        return view('pages.edit', compact('product'));
+    }
+    
+    public function update(Request $request, $id)
+    {
+        $product = Product::find($id);
+    
+        if (!$product) {
+            return redirect()->back()->with('error', 'Product not found.');
+        }
+    
+        $product->update($request->all());
+    
+        $products = Product::orderBy('created_at', 'desc')->get();
+    
+        return view('pages.products', compact('products'));
+    }
+    
+
+    public function destroy($id)
+{
+    $product = Product::find($id);
+    $product->delete();
+
+    return view('pages.products');
+}
+
+    
     
 }
